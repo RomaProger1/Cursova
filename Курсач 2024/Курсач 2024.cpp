@@ -21,7 +21,7 @@ char diskSearch() {
 	DWORD drives = GetLogicalDrives();
 	int selectedDrive = 0;
 	int count = 0;
-	char selectedDriveLetter = 'A'; // По умолчанию выбираем диск C
+	char selectedDriveLetter = 'A'; // По умолчанию выбираем диск A
 
 	// Подсчитываем количество доступных дисков
 	for (int i = 0; i < 26; i++){
@@ -37,6 +37,7 @@ char diskSearch() {
 			if (selectedDrive == 0){
 				selectedDrive = i;
 			}
+
 		}
 	}
 
@@ -46,7 +47,11 @@ char diskSearch() {
 			char key = _getch();// Считываем нажатую клаившу
 			if (key == 72 && selectedDrive > 0){// Клавиша "Вверх"
 				// Когда пользователь нажимает клавишу вверх "selectedDrive--;" уменьшается, что выбирает предыдущий диск
-				selectedDrive--; 
+				if (selectedDrive == count - 1){// Проверяем, является ли текущий диск первым доступным диском
+					// Если да, то не изменяем selectedDrive
+					continue;
+				}
+				selectedDrive--;
 			}
 			else if (key == 80 && selectedDrive < count + 1){// Клавиша "Вниз"
 				// Выбирает следующий диск
@@ -72,10 +77,7 @@ char diskSearch() {
 	}
 	return selectedDriveLetter;
 }
-bool fileMatching() {
-	// Дописать функцию
-	// Функция поиска полного совпадения файла, ответ в файле Stream Api
-}
+
 void find_files(const fs::path& directory, const std::string& filename) {
 	for (const auto& entry :fs::directory_iterator(directory)){
 		if (entry.is_regular_file()) {
@@ -90,7 +92,12 @@ void find_files(const fs::path& directory, const std::string& filename) {
 			if (current_filename.find(lower_filename) != string::npos){
 				cout << entry.path() << endl;
 			}
+
 		}
+		
+	}
+	if (filename == filename) {
+		cout << "Соответствующее слово найдено: " << filename << endl;
 	}
 }
 
@@ -102,9 +109,8 @@ int main()
 	char selectedDrive = diskSearch();
 	if (selectedDrive != '\0'){
 		string directory;
-		cout << "Введите путь к директории для поиска (например, " << selectedDrive << ":\\example\\: ";
-		getline(cin, directory);
-
+		cout << "Введите путь к директории для поиска (например, " << selectedDrive << ":\\example\\:";
+		getline(cin, directory );
 		string filename;
 		cout << "Введите название файла для поиска: ";
 		getline(cin, filename);
