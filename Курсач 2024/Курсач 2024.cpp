@@ -4,109 +4,73 @@
 #include <algorithm>
 #include <Windows.h>
 #include <conio.h>
+#include <unordered_set>
+#include "InteractionWTK.h"
 using namespace std;
 
 namespace fs = std::filesystem;
-
-// Функция для установки позиции курсора консоли
-void gotoxy(int x, int y) {
-	// Т.к при обновлении консоли курсор выбора "сбрасывается" и возвращается в начало и невозможно выбрать диск. Для этого нужна эта функция
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-char diskSearch() {
-	DWORD drives = GetLogicalDrives();
-	int selectedDrive = 0;
-	int count = 0;
-	char selectedDriveLetter = 'A'; // По умолчанию выбираем диск A
-
-	// Подсчитываем количество доступных дисков
-	for (int i = 0; i < 26; i++){
-		if (drives & (1 << i)) {
-			count++;
-		}
-	}
-	// Выводим список дисков и выбираем первый доступный диск
-	for (int i = 0; i < 26; i++){
-		if (drives & (1 << i)) {
-			char driveLetter = 'A' + i;
-			cout << (selectedDrive == i ? "> " : " ") << driveLetter << ":\\\\" << endl;
-			if (selectedDrive == 0){
-				selectedDrive = i;
-			}
-
-		}
-	}
-
-	// Обрабатываем нажатия клавиш
-	while (true){
-		if (_kbhit()) { // Проверка, была ли нажата клавиша
-			char key = _getch();// Считываем нажатую клаившу
-			if (key == 72 && selectedDrive > 0){// Клавиша "Вверх"
-				// Когда пользователь нажимает клавишу вверх "selectedDrive--;" уменьшается, что выбирает предыдущий диск
-				if (selectedDrive == count - 1){// Проверяем, является ли текущий диск первым доступным диском
-					// Если да, то не изменяем selectedDrive
-					continue;
-				}
-				selectedDrive--;
-			}
-			else if (key == 80 && selectedDrive < count + 1){// Клавиша "Вниз"
-				// Выбирает следующий диск
-				selectedDrive++;
-			}
-			else if (key == 13){ //Клавиша "Enter" для выбора диска
-				selectedDriveLetter = 'A' + selectedDrive;
-				break;
-			}
-			else if (key == 27){ // Клавиша "Esc"
-				break;
-			}
-
-			system("cls");
-			gotoxy(0,0);
-			for (int i = 0; i < 26; i++){
-				if (drives & (1 << i)) {
-					char driveLetter = 'A' + i;
-					cout << (selectedDrive == i ? "> " : " ") << driveLetter << ":\\\\" << endl;
-				}
-			}
-		}
-	}
-	return selectedDriveLetter;
-}
 
 void find_files(const fs::path& directory, const std::string& filename) {
 	for (const auto& entry :fs::directory_iterator(directory)){
 		if (entry.is_regular_file()) {
 			// Получаем имя файла без расширения
+
 			string current_filename = entry.path().stem().string();
 
+			// Преобразуем текущее имя файла в нижний регистр
 			string lower_filename = filename;
 			transform(lower_filename.begin(), lower_filename.end(), lower_filename.begin(), ::tolower);
-			// Преобразуем текущее имя файла в нижний регистр
 			transform(current_filename.begin(), current_filename.end(), current_filename.begin(), ::tolower);
+			auto it = search(current_filename.begin(), current_filename.end(), lower_filename.begin(), lower_filename.end());
 			// Проверяем, содержит ли имя файла искомое имя
-			if (current_filename.find(lower_filename) != string::npos){
-				cout << entry.path() << endl;
+			if (current_filename == lower_filename){
+				cout << entry.path() << "Искомый файл" << endl;
 			}
-
+			// Проверяем, частично ли совпадает имя файла с искомым именем
+			else if (it != current_filename.end()){
+				cout << entry.path() << "Название файла частично совпадает" << endl;
+			}
+			else
+			{
+				cout << entry.path() << "Нет искомого названия файлов" << endl;
+			}
 		}
 		
 	}
-	if (filename == filename) {
-		cout << "Соответствующее слово найдено: " << filename << endl;
-	}
+	
 }
 
+void find_directories(const fs::path& directory, const std::string& dirname) {
+	for (const auto& entry : fs::directory_iterator(directory)) {
+		if (entry.is_directory()) {
+
+			string current_dirname = entry.path().filename().string();
+			// Преобразуем текущее имя директории в нижний регистр
+			string lower_ariname = dirname;
+			transform(lower_ariname.begin(), lower_ariname.end(), lower_ariname.begin(), ::tolower);
+			transform(current_dirname.begin(), current_dirname.end(), current_dirname.begin(), ::tolower);
+
+			auto it = search(current_dirname.begin(), current_dirname.end(), lower_ariname.begin(), lower_ariname.end());
+			if (current_dirname == lower_ariname){
+				cout << entry.path() << " - Искомая папка" << endl;
+				if (current_dirname != lower_ariname){
+					
+						
+				}
+			}
+			
+		}
+	}
+}
+void logic() {
+
+}
 
 int main()
 {
 	setlocale(LC_ALL, "ru");
 
-	char selectedDrive = diskSearch();
+	char selectedDrive = keyboard::diskSearch();
 	if (selectedDrive != '\0'){
 		string directory;
 		cout << "Введите путь к директории для поиска (например, " << selectedDrive << ":\\example\\:";
