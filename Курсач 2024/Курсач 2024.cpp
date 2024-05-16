@@ -6,15 +6,28 @@
 #include <conio.h>
 #include <unordered_set>
 #include "InteractionWTK.h"
+#include "RulesProgramm.h"
 using namespace std;
 
+
+
 namespace fs = std::filesystem;
-//void find_extension(const fs::path& extension, const string& extensionName) {
-//	for (const auto& entry : fs::_Find_extension(extension))
-//	{
-//
-//	}
-//}
+void find_extension(const fs::path& directory, const string& extensionName) {
+	// Проверка, существует ли директория и является ли она директорией 
+	if (!fs::exists(directory) || !fs::is_directory(directory)) {
+		cerr << "Директория не существует или не является директорией: " << directory << endl;
+		return;
+	}
+
+	for (const auto& entry : fs::directory_iterator(directory)){
+		// Проверка, является ли текущий путь к фалам и соответствует ли его расширение заданному
+		if (fs::is_regular_file(entry.status()) && entry.path().extension() == extensionName){
+			cout << entry.path() << endl;
+		}
+	}
+
+}
+
 void find_files(const fs::path& directory, const string& filename) {
 	for (const auto& entry :fs::directory_iterator(directory)){
 		if (entry.is_regular_file()) {
@@ -85,20 +98,48 @@ void find_directories(const fs::path& directory, const string& dirname) {
 }
 void logic() {
 
-	cout << "Что вы хотите найти ?" << endl;
-
+	string tilda = "\\";
+	string tildaColon = ":\\";
+	rulesProgramm();
+	cout << "Что вы хотите найти ?" << "\n\n";
 	char choice = keyboard::keyChoice();
-	if (choice == 'b'){
+
+	if (choice == 'a'){
+		char selectedDrive = keyboard::diskSearch();
+		if (selectedDrive != '\0'){
+			string extensions;
+
+		}
+	}
+	else if (choice == 'b'){
 		char selectedDrive = keyboard::diskSearch();
 		if (selectedDrive != '\0') {
 			string directory;
-			cout << "Введите путь к директории для поиска (например, " << selectedDrive << ":\\example\\:";
-			getline(cin, directory);
+			string conStr;
+			string filenameOr;
 			string filename;
+			string drivetild = selectedDrive + tildaColon;
+			cout << "Введите путь к директории для поиска (например, " << selectedDrive << ":\\example\\:" << endl;
+			cout << drivetild;
+			getline(cin, directory);
+			if (directory == " "){
+				 conStr = selectedDrive + tildaColon;
+			}
+			else
+			{
+				 conStr = selectedDrive + tildaColon + directory;
+			}
 			cout << "Введите название файла для поиска: ";
-			getline(cin, filename);
+			getline(cin, filenameOr);
+			if (filenameOr == " "){
+				filename = conStr;
+			}
+			else
+			{
+				filename = filenameOr;
+			}
 
-			find_files(directory, filename);
+			find_files(conStr, filename);
 		}
 		else {
 			cout << "Поиск файлов отменен" << endl;
