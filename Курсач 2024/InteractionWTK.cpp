@@ -107,6 +107,38 @@ namespace keyboard {
 			}
 		}
 	}
+	char keyYesOrNoMod() {
+
+		const char options[] = { 'y', 'n' };
+		int selectedOption = 0;
+		int optionCount = sizeof(options) / sizeof(options[0]);
+
+		cout << (selectedOption == 0 ? "> Да завершить" : " Да завершить") << endl;
+		cout << (selectedOption == 1 ? "> Нет, начать новый поиск" : " Нет, начать новый поиск") << endl;
+
+		while (true) {
+			if (_kbhit) {
+				char key = _getch();
+
+				if (key == 72 && selectedOption > 0) { // Клавиша "Вверх"
+					selectedOption--;
+				}
+				else if (key == 80 && selectedOption < optionCount - 1) { // Клавиша "Вниз"
+					selectedOption++;
+				}
+				else if (key == 13) { // Клавиша "Enter" для выбора варианта
+					return options[selectedOption];
+				}
+				else if (key == 27) { // Клавиша "Esc"
+					return '\0'; // Возвращаем '\0' в качестве символа, если пользователь отменил выбор
+				}
+				system("cls");
+				gotoxy(0, 0);
+				cout << (selectedOption == 0 ? "> Да завершить" : " Да завершить") << endl;
+				cout << (selectedOption == 1 ? "> Нет, начать новый поиск" : " Нет, начать новый поиск") << endl;
+			}
+		}
+	}
 	char keyChoice() { // Выбор поиска
 
 		const char options[] = { 'a', 'b','c'};
