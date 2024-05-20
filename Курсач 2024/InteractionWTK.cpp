@@ -141,13 +141,15 @@ namespace keyboard {
 	}
 	char keyChoice() { // Выбор поиска
 
-		const char options[] = { 'a', 'b','c'};
+		const char options[] = { 'a', 'b','c','d','e'};
 		int selectedOption = 0;
 		int optionCount = sizeof(options) / sizeof(options[0]);
 
 		cout << (selectedOption == 0 ? "> Поиск файла по расширению" : " Поиск файла по расширению") << endl;
-		cout << (selectedOption == 1 ? "> Поиск фала по названию" : " Поиск фала по названию") << endl;
-		cout << (selectedOption == 2 ? "> Поиск директории (папки)" : " Поиска директории (папки)") << endl;
+		cout << (selectedOption == 1 ? "> Поиск файла по названию" : " Поиск файла по названию") << endl;
+		cout << (selectedOption == 2 ? "> Поиск файла по названию и расширению" : " Поиск файла по названиюи расширению") << endl;
+		cout << (selectedOption == 3 ? "> Поиск текста" : " Поиск текста") << endl;
+		cout << (selectedOption == 4 ? "> Поиск директории (папки)" : " Поиска директории (папки)") << endl;
 
 		while (true) {
 			if (_kbhit) {
@@ -169,8 +171,10 @@ namespace keyboard {
 				gotoxy(0, 0);
 				cout << "Что вы хотите найти ?" << endl;
 				cout << (selectedOption == 0 ? "> Поиск файла по расширению" : " Поиск файла по расширению") << endl;
-				cout << (selectedOption == 1 ? "> Поиск фала по названию" : " Поиск фала по названию") << endl;
-				cout << (selectedOption == 2 ? "> Поиск директории (папки)" : " Поиска директории (папки)") << endl;
+				cout << (selectedOption == 1 ? "> Поиск файла по названию" : " Поиск файла по названию") << endl;
+				cout << (selectedOption == 2 ? "> Поиск файла по названию и расширению" : " Поиск файла по названиюи расширению") << endl;
+				cout << (selectedOption == 3 ? "> Поиск текста" : " Поиск текста") << endl;
+				cout << (selectedOption == 4 ? "> Поиск директории (папки)" : " Поиска директории (папки)") << endl;
 			}
 		}
 	}

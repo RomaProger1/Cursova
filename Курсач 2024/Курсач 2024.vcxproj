@@ -128,10 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Distance.cpp" />
     <ClCompile Include="InteractionWTK.cpp" />
     <ClCompile Include="Курсач 2024.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Distance.h" />
     <ClInclude Include="InteractionWTK.h" />
     <ClInclude Include="RulesProgramm.h" />
   </ItemGroup>

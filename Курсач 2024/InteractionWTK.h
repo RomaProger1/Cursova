@@ -8,5 +8,5 @@ namespace keyboard {
 	char keyChoice(); // Выбор поиска
 	char keyYesOrNoMod();
 	char keyYesOrNoOrAll();
-
+	
 }
