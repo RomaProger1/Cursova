@@ -130,7 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Distance.cpp" />
     <ClCompile Include="InteractionWTK.cpp" />
-    <ClCompile Include="Курсач 2024.cpp" />
+    <ClCompile Include="MainKursova.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Distance.h" />
